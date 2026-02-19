@@ -1,0 +1,1 @@
+/home/gamp/beamx/mobile/native/target/debug/libnative.a: /home/gamp/beamx/mobile/native/src/api.rs /home/gamp/beamx/mobile/native/src/bridge_generated.io.rs /home/gamp/beamx/mobile/native/src/bridge_generated.rs /home/gamp/beamx/mobile/native/src/lib.rs
