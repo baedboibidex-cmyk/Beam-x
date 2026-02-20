@@ -6,6 +6,7 @@ import 'screens/discovery_screen.dart';
 import 'screens/history_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/qr_screen.dart';
+import 'screens/about_screen.dart';
 
 final native = NativeImpl(ExternalLibrary.open(
   '/home/gamp/beamx/mobile/native/target/debug/libnative.so'));
@@ -44,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String _message = "Press a button to test";
   bool _loading = false;
   String _myIp = "Loading...";
-  String _deviceName = "My BeamX Device";
+  final String _deviceName = "My BeamX Device";
 
   @override
   void initState() {
@@ -95,138 +96,153 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: const Icon(Icons.qr_code),
             onPressed: () => Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (_) => QRScreen(ip: _myIp),
-              ),
+              MaterialPageRoute(builder: (_) => QRScreen(ip: _myIp)),
             ),
           ),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 30),
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.blueAccent.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12),
-                border:
-                    Border.all(color: Colors.blueAccent.withOpacity(0.3)),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.computer,
-                      size: 40, color: Colors.blueAccent),
-                  const SizedBox(width: 16),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        _deviceName,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          const Icon(Icons.wifi,
-                              size: 14, color: Colors.grey),
-                          const SizedBox(width: 4),
-                          Text(
-                            _myIp,
-                            style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 14,
-                            ),
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(height: 20),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 30),
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.blueAccent.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                      color: Colors.blueAccent.withOpacity(0.3)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.computer,
+                        size: 40, color: Colors.blueAccent),
+                    const SizedBox(width: 16),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _deviceName,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            const Icon(Icons.wifi,
+                                size: 14, color: Colors.grey),
+                            const SizedBox(width: 4),
+                            Text(
+                              _myIp,
+                              style: const TextStyle(
+                                color: Colors.grey,
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            const Icon(Icons.rocket_launch,
-                size: 60, color: Colors.blueAccent),
-            const SizedBox(height: 10),
-            const Text(
-              'BeamX Engine',
-              style:
-                  TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
-              child: Text(
-                _message,
-                textAlign: TextAlign.center,
-                style: const TextStyle(color: Colors.grey),
+              const SizedBox(height: 20),
+              const Icon(Icons.rocket_launch,
+                  size: 60, color: Colors.blueAccent),
+              const SizedBox(height: 10),
+              const Text(
+                'BeamX Engine',
+                style: TextStyle(
+                    fontSize: 24, fontWeight: FontWeight.bold),
               ),
-            ),
-            const SizedBox(height: 30),
-            ElevatedButton.icon(
-              onPressed: _loading ? null : _testRustConnection,
-              icon: _loading
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child:
-                          CircularProgressIndicator(strokeWidth: 2))
-                  : const Icon(Icons.bug_report),
-              label: Text(_loading ? "Testing..." : "Test Rust Core"),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 30, vertical: 15),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: Text(
+                  _message,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.grey),
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (_) => const DiscoveryScreen()),
+              const SizedBox(height: 30),
+              ElevatedButton.icon(
+                onPressed: _loading ? null : _testRustConnection,
+                icon: _loading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2))
+                    : const Icon(Icons.bug_report),
+                label: Text(_loading ? "Testing..." : "Test Rust Core"),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 30, vertical: 15),
+                ),
               ),
-              icon: const Icon(Icons.wifi_find),
-              label: const Text("Find Devices"),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 30, vertical: 15),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const DiscoveryScreen()),
+                ),
+                icon: const Icon(Icons.wifi_find),
+                label: const Text("Find Devices"),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 30, vertical: 15),
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (_) => const HistoryScreen()),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const HistoryScreen()),
+                ),
+                icon: const Icon(Icons.history),
+                label: const Text("Transfer History"),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 30, vertical: 15),
+                ),
               ),
-              icon: const Icon(Icons.history),
-              label: const Text("Transfer History"),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 30, vertical: 15),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const SettingsScreen()),
+                ),
+                icon: const Icon(Icons.settings),
+                label: const Text("Settings"),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 30, vertical: 15),
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (_) => const SettingsScreen()),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const AboutScreen()),
+                ),
+                icon: const Icon(Icons.info_outline),
+                label: const Text("About"),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 30, vertical: 15),
+                ),
               ),
-              icon: const Icon(Icons.settings),
-              label: const Text("Settings"),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 30, vertical: 15),
-              ),
-            ),
-          ],
+              const SizedBox(height: 30),
+            ],
+          ),
         ),
       ),
     );
