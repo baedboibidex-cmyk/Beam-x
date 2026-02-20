@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'bridge_generated.dart';
+import 'screens/discovery_screen.dart';
 
-// Initialize the native bridge
-final native = NativeImpl(ExternalLibrary.open('libnative.so'));
+final native = NativeImpl(ExternalLibrary.open(
+  '/home/gamp/beamx/mobile/native/target/debug/libnative.so'));
 
 void main() {
   runApp(const BeamXApp());
@@ -36,7 +37,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String _message = "Press button to test Rust Core";
+  String _message = "Press a button to test";
   bool _loading = false;
 
   void _testRustConnection() async {
@@ -85,9 +86,24 @@ class _HomeScreenState extends State<HomeScreen> {
             ElevatedButton.icon(
               onPressed: _loading ? null : _testRustConnection,
               icon: _loading
-                  ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2))
                   : const Icon(Icons.bug_report),
               label: Text(_loading ? "Testing..." : "Test Rust Core"),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const DiscoveryScreen()),
+              ),
+              icon: const Icon(Icons.wifi_find),
+              label: const Text("Find Devices"),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
               ),

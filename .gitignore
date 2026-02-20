@@ -1,5 +1,7 @@
-build/
-native/target/
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
+mobile/build/
+mobile/native/target/
+mobile/.dart_tool/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+run.sh
+Beam-x/

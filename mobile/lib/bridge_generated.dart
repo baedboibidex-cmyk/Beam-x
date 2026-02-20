@@ -18,6 +18,24 @@ abstract class Native {
   Future<String> pingDevice({required String deviceId, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kPingDeviceConstMeta;
+
+  Future<List<Device>> discoverDevices({dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kDiscoverDevicesConstMeta;
+}
+
+class Device {
+  final String id;
+  final String name;
+  final String ip;
+  final int port;
+
+  const Device({
+    required this.id,
+    required this.name,
+    required this.ip,
+    required this.port,
+  });
 }
 
 class NativeImpl implements Native {
@@ -64,6 +82,23 @@ class NativeImpl implements Native {
         argNames: ["deviceId"],
       );
 
+  Future<List<Device>> discoverDevices({dynamic hint}) {
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_discover_devices(port_),
+      parseSuccessData: _wire2api_list_device,
+      parseErrorData: null,
+      constMeta: kDiscoverDevicesConstMeta,
+      argValues: [],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kDiscoverDevicesConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "discover_devices",
+        argNames: [],
+      );
+
   void dispose() {
     _platform.dispose();
   }
@@ -71,6 +106,26 @@ class NativeImpl implements Native {
 
   String _wire2api_String(dynamic raw) {
     return raw as String;
+  }
+
+  Device _wire2api_device(dynamic raw) {
+    final arr = raw as List<dynamic>;
+    if (arr.length != 4)
+      throw Exception('unexpected arr length: expect 4 but see ${arr.length}');
+    return Device(
+      id: _wire2api_String(arr[0]),
+      name: _wire2api_String(arr[1]),
+      ip: _wire2api_String(arr[2]),
+      port: _wire2api_u16(arr[3]),
+    );
+  }
+
+  List<Device> _wire2api_list_device(dynamic raw) {
+    return (raw as List<dynamic>).map(_wire2api_device).toList();
+  }
+
+  int _wire2api_u16(dynamic raw) {
+    return raw as int;
   }
 
   int _wire2api_u8(dynamic raw) {
@@ -238,6 +293,20 @@ class NativeWire implements FlutterRustBridgeWireBase {
               ffi.Int64, ffi.Pointer<wire_uint_8_list>)>>('wire_ping_device');
   late final _wire_ping_device = _wire_ping_devicePtr
       .asFunction<void Function(int, ffi.Pointer<wire_uint_8_list>)>();
+
+  void wire_discover_devices(
+    int port_,
+  ) {
+    return _wire_discover_devices(
+      port_,
+    );
+  }
+
+  late final _wire_discover_devicesPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
+          'wire_discover_devices');
+  late final _wire_discover_devices =
+      _wire_discover_devicesPtr.asFunction<void Function(int)>();
 
   ffi.Pointer<wire_uint_8_list> new_uint_8_list_0(
     int len,

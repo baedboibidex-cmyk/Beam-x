@@ -11,6 +11,11 @@ pub extern "C" fn wire_ping_device(port_: i64, device_id: *mut wire_uint_8_list)
     wire_ping_device_impl(port_, device_id)
 }
 
+#[no_mangle]
+pub extern "C" fn wire_discover_devices(port_: i64) {
+    wire_discover_devices_impl(port_)
+}
+
 // Section: allocate functions
 
 #[no_mangle]

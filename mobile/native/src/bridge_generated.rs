@@ -45,6 +45,16 @@ fn wire_ping_device_impl(port_: MessagePort, device_id: impl Wire2Api<String> + 
         },
     )
 }
+fn wire_discover_devices_impl(port_: MessagePort) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, Vec<Device>, _>(
+        WrapInfo {
+            debug_name: "discover_devices",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || move |task_callback| Result::<_, ()>::Ok(discover_devices()),
+    )
+}
 // Section: wrapper structs
 
 // Section: static checks
@@ -75,6 +85,24 @@ impl Wire2Api<u8> for u8 {
 }
 
 // Section: impl IntoDart
+
+impl support::IntoDart for Device {
+    fn into_dart(self) -> support::DartAbi {
+        vec![
+            self.id.into_into_dart().into_dart(),
+            self.name.into_into_dart().into_dart(),
+            self.ip.into_into_dart().into_dart(),
+            self.port.into_into_dart().into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl support::IntoDartExceptPrimitive for Device {}
+impl rust2dart::IntoIntoDart<Device> for Device {
+    fn into_into_dart(self) -> Self {
+        self
+    }
+}
 
 // Section: executor
 

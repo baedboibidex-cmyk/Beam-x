@@ -132,15 +132,17 @@ install(CODE "
 install(DIRECTORY "${PROJECT_BUILD_DIR}/${FLUTTER_ASSET_DIR_NAME}"
   DESTINATION "${INSTALL_BUNDLE_DATA_DIR}" COMPONENT Runtime)
 
-# Install the AOT library on non-Debug builds only.
-if(NOT CMAKE_BUILD_TYPE MATCHES "Debug")
-  install(FILES "${AOT_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
-    COMPONENT Runtime)
-endif()
-
 # Copy Rust library into bundle
-add_custom_command(TARGET ${BINARY_NAME} POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy
-    ${CMAKE_SOURCE_DIR}/../native/target/debug/libnative.so
-    ${CMAKE_BINARY_DIR}/bundle/lib/libnative.so
-)
+if(CMAKE_BUILD_TYPE MATCHES "Debug")
+  add_custom_command(TARGET ${BINARY_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+      ${CMAKE_SOURCE_DIR}/../native/target/debug/libnative.so
+      ${CMAKE_BINARY_DIR}/bundle/lib/libnative.so
+  )
+else()
+  add_custom_command(TARGET ${BINARY_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+      ${CMAKE_SOURCE_DIR}/../native/target/release/libnative.so
+      ${CMAKE_BINARY_DIR}/bundle/lib/libnative.so
+  )
+endif()
