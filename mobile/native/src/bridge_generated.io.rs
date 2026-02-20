@@ -16,6 +16,20 @@ pub extern "C" fn wire_discover_devices(port_: i64) {
     wire_discover_devices_impl(port_)
 }
 
+#[no_mangle]
+pub extern "C" fn wire_receive_file(port_: i64, save_path: *mut wire_uint_8_list) {
+    wire_receive_file_impl(port_, save_path)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_send_file(
+    port_: i64,
+    file_path: *mut wire_uint_8_list,
+    target_ip: *mut wire_uint_8_list,
+) {
+    wire_send_file_impl(port_, file_path, target_ip)
+}
+
 // Section: allocate functions
 
 #[no_mangle]

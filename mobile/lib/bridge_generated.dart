@@ -22,6 +22,15 @@ abstract class Native {
   Future<List<Device>> discoverDevices({dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kDiscoverDevicesConstMeta;
+
+  Future<String> receiveFile({required String savePath, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kReceiveFileConstMeta;
+
+  Future<String> sendFile(
+      {required String filePath, required String targetIp, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kSendFileConstMeta;
 }
 
 class Device {
@@ -97,6 +106,44 @@ class NativeImpl implements Native {
       const FlutterRustBridgeTaskConstMeta(
         debugName: "discover_devices",
         argNames: [],
+      );
+
+  Future<String> receiveFile({required String savePath, dynamic hint}) {
+    var arg0 = _platform.api2wire_String(savePath);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_receive_file(port_, arg0),
+      parseSuccessData: _wire2api_String,
+      parseErrorData: null,
+      constMeta: kReceiveFileConstMeta,
+      argValues: [savePath],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kReceiveFileConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "receive_file",
+        argNames: ["savePath"],
+      );
+
+  Future<String> sendFile(
+      {required String filePath, required String targetIp, dynamic hint}) {
+    var arg0 = _platform.api2wire_String(filePath);
+    var arg1 = _platform.api2wire_String(targetIp);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_send_file(port_, arg0, arg1),
+      parseSuccessData: _wire2api_String,
+      parseErrorData: null,
+      constMeta: kSendFileConstMeta,
+      argValues: [filePath, targetIp],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kSendFileConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "send_file",
+        argNames: ["filePath", "targetIp"],
       );
 
   void dispose() {
@@ -307,6 +354,43 @@ class NativeWire implements FlutterRustBridgeWireBase {
           'wire_discover_devices');
   late final _wire_discover_devices =
       _wire_discover_devicesPtr.asFunction<void Function(int)>();
+
+  void wire_receive_file(
+    int port_,
+    ffi.Pointer<wire_uint_8_list> save_path,
+  ) {
+    return _wire_receive_file(
+      port_,
+      save_path,
+    );
+  }
+
+  late final _wire_receive_filePtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(
+              ffi.Int64, ffi.Pointer<wire_uint_8_list>)>>('wire_receive_file');
+  late final _wire_receive_file = _wire_receive_filePtr
+      .asFunction<void Function(int, ffi.Pointer<wire_uint_8_list>)>();
+
+  void wire_send_file(
+    int port_,
+    ffi.Pointer<wire_uint_8_list> file_path,
+    ffi.Pointer<wire_uint_8_list> target_ip,
+  ) {
+    return _wire_send_file(
+      port_,
+      file_path,
+      target_ip,
+    );
+  }
+
+  late final _wire_send_filePtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(ffi.Int64, ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>)>>('wire_send_file');
+  late final _wire_send_file = _wire_send_filePtr.asFunction<
+      void Function(
+          int, ffi.Pointer<wire_uint_8_list>, ffi.Pointer<wire_uint_8_list>)>();
 
   ffi.Pointer<wire_uint_8_list> new_uint_8_list_0(
     int len,

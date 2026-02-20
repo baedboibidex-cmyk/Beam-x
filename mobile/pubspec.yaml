@@ -40,6 +40,7 @@ dependencies:
   uuid: ^4.2.2
   meta: ^1.9.1
   flutter_rust_bridge: 1.82.6
+  file_picker: ^8.0.0+1
 
 dev_dependencies:
   flutter_test:

@@ -55,6 +55,37 @@ fn wire_discover_devices_impl(port_: MessagePort) {
         move || move |task_callback| Result::<_, ()>::Ok(discover_devices()),
     )
 }
+fn wire_receive_file_impl(port_: MessagePort, save_path: impl Wire2Api<String> + UnwindSafe) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, String, _>(
+        WrapInfo {
+            debug_name: "receive_file",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_save_path = save_path.wire2api();
+            move |task_callback| Result::<_, ()>::Ok(receive_file(api_save_path))
+        },
+    )
+}
+fn wire_send_file_impl(
+    port_: MessagePort,
+    file_path: impl Wire2Api<String> + UnwindSafe,
+    target_ip: impl Wire2Api<String> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, String, _>(
+        WrapInfo {
+            debug_name: "send_file",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_file_path = file_path.wire2api();
+            let api_target_ip = target_ip.wire2api();
+            move |task_callback| Result::<_, ()>::Ok(send_file(api_file_path, api_target_ip))
+        },
+    )
+}
 // Section: wrapper structs
 
 // Section: static checks
