@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'bridge_generated.dart';
 import 'screens/discovery_screen.dart';
+import 'screens/history_screen.dart';
 
 final native = NativeImpl(ExternalLibrary.open(
   '/home/gamp/beamx/mobile/native/target/debug/libnative.so'));
@@ -104,6 +105,18 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               icon: const Icon(Icons.wifi_find),
               label: const Text("Find Devices"),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const HistoryScreen()),
+              ),
+              icon: const Icon(Icons.history),
+              label: const Text("Transfer History"),
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
               ),

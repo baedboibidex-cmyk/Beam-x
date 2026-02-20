@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'package:file_picker/file_picker.dart';
 import '../bridge_generated.dart';
+import 'history_screen.dart';
 
 final _native = NativeImpl(ExternalLibrary.open(
   '/home/gamp/beamx/mobile/native/target/debug/libnative.so'));
@@ -41,7 +42,6 @@ class _TransferScreenState extends State<TransferScreen> {
       _progress = 0;
     });
     try {
-      // Simulate progress
       for (int i = 1; i <= 5; i++) {
         await Future.delayed(const Duration(milliseconds: 200));
         setState(() => _progress = i / 5);
@@ -50,6 +50,13 @@ class _TransferScreenState extends State<TransferScreen> {
         filePath: _selectedFile!,
         targetIp: widget.deviceIp,
       );
+      final bytes = int.tryParse(result.split(' ')[1]) ?? 0;
+      transferHistory.add(TransferRecord(
+        fileName: _selectedFile!.split('/').last,
+        deviceIp: widget.deviceIp,
+        bytes: bytes,
+        sent: true,
+      ));
       setState(() {
         _status = result;
         _progress = 1.0;
@@ -71,6 +78,13 @@ class _TransferScreenState extends State<TransferScreen> {
       final result = await _native.receiveFile(
         savePath: '/home/gamp/received_file.txt',
       );
+      final bytes = int.tryParse(result.split(' ')[1]) ?? 0;
+      transferHistory.add(TransferRecord(
+        fileName: 'received_file.txt',
+        deviceIp: widget.deviceIp,
+        bytes: bytes,
+        sent: false,
+      ));
       setState(() {
         _status = result;
         _progress = 1.0;
