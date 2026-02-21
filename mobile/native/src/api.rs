@@ -105,3 +105,39 @@ pub fn send_file(file_path: String, target_ip: String) -> String {
     }
     format!("Sent {} bytes to {}", total, target_ip)
 }
+
+// Send a chat message to a device
+pub fn send_message(message: String, target_ip: String) -> String {
+    use std::io::Write;
+    let addr = format!("{}:54323", target_ip);
+    match std::net::TcpStream::connect(&addr) {
+        Ok(mut stream) => {
+            let _ = stream.write_all(message.as_bytes());
+            format!("Sent: {}", message)
+        }
+        Err(e) => format!("Error: {}", e),
+    }
+}
+
+// Listen for incoming chat messages
+pub fn receive_message() -> String {
+    use std::io::Read;
+    let listener = match std::net::TcpListener::bind("0.0.0.0:54323") {
+        Ok(l) => l,
+        Err(e) => return format!("Error: {}", e),
+    };
+    let _ = listener.set_nonblocking(false);
+    match listener.accept() {
+        Ok((mut stream, addr)) => {
+            let mut buf = [0; 1024];
+            match stream.read(&mut buf) {
+                Ok(n) => {
+                    let msg = String::from_utf8_lossy(&buf[..n]).to_string();
+                    format!("{}|{}", addr.ip(), msg)
+                }
+                Err(e) => format!("Error: {}", e),
+            }
+        }
+        Err(e) => format!("Error: {}", e),
+    }
+}

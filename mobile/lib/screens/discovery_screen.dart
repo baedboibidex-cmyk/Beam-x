@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import '../bridge_generated.dart';
 import 'transfer_screen.dart';
+import 'chat_screen.dart';
 
 final _native = NativeImpl(ExternalLibrary.open(
   '/home/gamp/beamx/mobile/native/target/debug/libnative.so'));
@@ -45,9 +46,16 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
     if (ip.isEmpty) return;
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => TransferScreen(deviceIp: ip),
-      ),
+      MaterialPageRoute(builder: (_) => TransferScreen(deviceIp: ip)),
+    );
+  }
+
+  void _chatManual() {
+    final ip = _ipController.text.trim();
+    if (ip.isEmpty) return;
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => ChatScreen(deviceIp: ip)),
     );
   }
 
@@ -91,10 +99,24 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
             ),
           ),
           const SizedBox(height: 10),
-          ElevatedButton.icon(
-            onPressed: _connectManual,
-            icon: const Icon(Icons.connect_without_contact),
-            label: const Text("Connect"),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton.icon(
+                onPressed: _connectManual,
+                icon: const Icon(Icons.connect_without_contact),
+                label: const Text("Connect"),
+              ),
+              const SizedBox(width: 16),
+              ElevatedButton.icon(
+                onPressed: _chatManual,
+                icon: const Icon(Icons.chat),
+                label: const Text("Chat"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.greenAccent.withOpacity(0.2),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 20),
           Expanded(
@@ -109,11 +131,28 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
                             color: Colors.blueAccent),
                         title: Text(d.name),
                         subtitle: Text("${d.ip}:${d.port}"),
-                        trailing: const Icon(Icons.arrow_forward_ios),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.chat,
+                                  color: Colors.greenAccent),
+                              onPressed: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      ChatScreen(deviceIp: d.ip),
+                                ),
+                              ),
+                            ),
+                            const Icon(Icons.arrow_forward_ios),
+                          ],
+                        ),
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => TransferScreen(deviceIp: d.ip),
+                            builder: (_) =>
+                                TransferScreen(deviceIp: d.ip),
                           ),
                         ),
                       );

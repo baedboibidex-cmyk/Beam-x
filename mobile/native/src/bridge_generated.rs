@@ -86,6 +86,34 @@ fn wire_send_file_impl(
         },
     )
 }
+fn wire_send_message_impl(
+    port_: MessagePort,
+    message: impl Wire2Api<String> + UnwindSafe,
+    target_ip: impl Wire2Api<String> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, String, _>(
+        WrapInfo {
+            debug_name: "send_message",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_message = message.wire2api();
+            let api_target_ip = target_ip.wire2api();
+            move |task_callback| Result::<_, ()>::Ok(send_message(api_message, api_target_ip))
+        },
+    )
+}
+fn wire_receive_message_impl(port_: MessagePort) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, String, _>(
+        WrapInfo {
+            debug_name: "receive_message",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || move |task_callback| Result::<_, ()>::Ok(receive_message()),
+    )
+}
 // Section: wrapper structs
 
 // Section: static checks

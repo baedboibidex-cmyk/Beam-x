@@ -30,6 +30,20 @@ pub extern "C" fn wire_send_file(
     wire_send_file_impl(port_, file_path, target_ip)
 }
 
+#[no_mangle]
+pub extern "C" fn wire_send_message(
+    port_: i64,
+    message: *mut wire_uint_8_list,
+    target_ip: *mut wire_uint_8_list,
+) {
+    wire_send_message_impl(port_, message, target_ip)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_receive_message(port_: i64) {
+    wire_receive_message_impl(port_)
+}
+
 // Section: allocate functions
 
 #[no_mangle]

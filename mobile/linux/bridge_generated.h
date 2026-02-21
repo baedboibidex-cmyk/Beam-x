@@ -38,6 +38,12 @@ void wire_send_file(int64_t port_,
                     struct wire_uint_8_list *file_path,
                     struct wire_uint_8_list *target_ip);
 
+void wire_send_message(int64_t port_,
+                       struct wire_uint_8_list *message,
+                       struct wire_uint_8_list *target_ip);
+
+void wire_receive_message(int64_t port_);
+
 struct wire_uint_8_list *new_uint_8_list_0(int32_t len);
 
 void free_WireSyncReturn(WireSyncReturn ptr);
@@ -49,6 +55,8 @@ static int64_t dummy_method_to_enforce_bundling(void) {
     dummy_var ^= ((int64_t) (void*) wire_discover_devices);
     dummy_var ^= ((int64_t) (void*) wire_receive_file);
     dummy_var ^= ((int64_t) (void*) wire_send_file);
+    dummy_var ^= ((int64_t) (void*) wire_send_message);
+    dummy_var ^= ((int64_t) (void*) wire_receive_message);
     dummy_var ^= ((int64_t) (void*) new_uint_8_list_0);
     dummy_var ^= ((int64_t) (void*) free_WireSyncReturn);
     dummy_var ^= ((int64_t) (void*) store_dart_post_cobject);

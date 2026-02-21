@@ -31,6 +31,15 @@ abstract class Native {
       {required String filePath, required String targetIp, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kSendFileConstMeta;
+
+  Future<String> sendMessage(
+      {required String message, required String targetIp, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kSendMessageConstMeta;
+
+  Future<String> receiveMessage({dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kReceiveMessageConstMeta;
 }
 
 class Device {
@@ -144,6 +153,43 @@ class NativeImpl implements Native {
       const FlutterRustBridgeTaskConstMeta(
         debugName: "send_file",
         argNames: ["filePath", "targetIp"],
+      );
+
+  Future<String> sendMessage(
+      {required String message, required String targetIp, dynamic hint}) {
+    var arg0 = _platform.api2wire_String(message);
+    var arg1 = _platform.api2wire_String(targetIp);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_send_message(port_, arg0, arg1),
+      parseSuccessData: _wire2api_String,
+      parseErrorData: null,
+      constMeta: kSendMessageConstMeta,
+      argValues: [message, targetIp],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kSendMessageConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "send_message",
+        argNames: ["message", "targetIp"],
+      );
+
+  Future<String> receiveMessage({dynamic hint}) {
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_receive_message(port_),
+      parseSuccessData: _wire2api_String,
+      parseErrorData: null,
+      constMeta: kReceiveMessageConstMeta,
+      argValues: [],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kReceiveMessageConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "receive_message",
+        argNames: [],
       );
 
   void dispose() {
@@ -391,6 +437,40 @@ class NativeWire implements FlutterRustBridgeWireBase {
   late final _wire_send_file = _wire_send_filePtr.asFunction<
       void Function(
           int, ffi.Pointer<wire_uint_8_list>, ffi.Pointer<wire_uint_8_list>)>();
+
+  void wire_send_message(
+    int port_,
+    ffi.Pointer<wire_uint_8_list> message,
+    ffi.Pointer<wire_uint_8_list> target_ip,
+  ) {
+    return _wire_send_message(
+      port_,
+      message,
+      target_ip,
+    );
+  }
+
+  late final _wire_send_messagePtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(ffi.Int64, ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>)>>('wire_send_message');
+  late final _wire_send_message = _wire_send_messagePtr.asFunction<
+      void Function(
+          int, ffi.Pointer<wire_uint_8_list>, ffi.Pointer<wire_uint_8_list>)>();
+
+  void wire_receive_message(
+    int port_,
+  ) {
+    return _wire_receive_message(
+      port_,
+    );
+  }
+
+  late final _wire_receive_messagePtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
+          'wire_receive_message');
+  late final _wire_receive_message =
+      _wire_receive_messagePtr.asFunction<void Function(int)>();
 
   ffi.Pointer<wire_uint_8_list> new_uint_8_list_0(
     int len,

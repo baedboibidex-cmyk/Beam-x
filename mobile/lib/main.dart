@@ -218,7 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisCount: 2,
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
-              childAspectRatio: 1.3,
+              childAspectRatio: 4.5,
               children: [
                 _ActionCard(
                   icon: Icons.wifi_find,
