@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
+import '../main.dart' show native;
 import '../bridge_generated.dart';
 import 'transfer_screen.dart';
 import 'chat_screen.dart';
-
-final _native = NativeImpl(ExternalLibrary.open(
-  '/home/gamp/beamx/mobile/native/target/debug/libnative.so'));
+import 'clipboard_screen.dart';
 
 class DiscoveryScreen extends StatefulWidget {
   const DiscoveryScreen({super.key});
@@ -27,7 +25,7 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
       _devices = [];
     });
     try {
-      final devices = await _native.discoverDevices();
+      final devices = await native.discoverDevices();
       setState(() {
         _devices = devices;
         _status = devices.isEmpty
@@ -44,19 +42,22 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
   void _connectManual() {
     final ip = _ipController.text.trim();
     if (ip.isEmpty) return;
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => TransferScreen(deviceIp: ip)),
-    );
+    Navigator.push(context,
+        MaterialPageRoute(builder: (_) => TransferScreen(deviceIp: ip)));
   }
 
   void _chatManual() {
     final ip = _ipController.text.trim();
     if (ip.isEmpty) return;
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => ChatScreen(deviceIp: ip)),
-    );
+    Navigator.push(context,
+        MaterialPageRoute(builder: (_) => ChatScreen(deviceIp: ip)));
+  }
+
+  void _clipboardManual() {
+    final ip = _ipController.text.trim();
+    if (ip.isEmpty) return;
+    Navigator.push(context,
+        MaterialPageRoute(builder: (_) => ClipboardScreen(deviceIp: ip)));
   }
 
   @override
@@ -99,21 +100,30 @@ class _DiscoveryScreenState extends State<DiscoveryScreen> {
             ),
           ),
           const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 10,
             children: [
               ElevatedButton.icon(
                 onPressed: _connectManual,
-                icon: const Icon(Icons.connect_without_contact),
-                label: const Text("Connect"),
+                icon: const Icon(Icons.swap_horiz),
+                label: const Text("Transfer"),
               ),
-              const SizedBox(width: 16),
               ElevatedButton.icon(
                 onPressed: _chatManual,
                 icon: const Icon(Icons.chat),
                 label: const Text("Chat"),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.greenAccent.withOpacity(0.2),
+                ),
+              ),
+              ElevatedButton.icon(
+                onPressed: _clipboardManual,
+                icon: const Icon(Icons.content_paste),
+                label: const Text("Clipboard"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      const Color(0xFFFF6D00).withOpacity(0.2),
                 ),
               ),
             ],

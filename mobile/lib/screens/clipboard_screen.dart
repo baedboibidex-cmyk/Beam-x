@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
-import '../bridge_generated.dart';
-
-final _native = NativeImpl(ExternalLibrary.open(
-  '/home/gamp/beamx/mobile/native/target/debug/libnative.so'));
+import '../main.dart' show native;
 
 class ClipboardScreen extends StatefulWidget {
   final String deviceIp;
@@ -31,7 +27,7 @@ class _ClipboardScreenState extends State<ClipboardScreen> {
       _status = "Sending clipboard...";
     });
     try {
-      final result = await _native.sendClipboard(
+      final result = await native.sendClipboard(
         text: text,
         targetIp: widget.deviceIp,
       );
@@ -49,7 +45,7 @@ class _ClipboardScreenState extends State<ClipboardScreen> {
       _status = "Waiting for clipboard...";
     });
     try {
-      final result = await _native.receiveClipboard();
+      final result = await native.receiveClipboard();
       setState(() {
         _received = result;
         _status = "Clipboard received!";
@@ -87,7 +83,8 @@ class _ClipboardScreenState extends State<ClipboardScreen> {
               decoration: BoxDecoration(
                 color: const Color(0xFF111827),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.blueAccent.withOpacity(0.3)),
+                border: Border.all(
+                    color: Colors.blueAccent.withOpacity(0.3)),
               ),
               child: Row(
                 children: [
@@ -101,13 +98,11 @@ class _ClipboardScreenState extends State<ClipboardScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Send Text',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold),
-            ),
+            const Text('Send Text',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
             TextField(
               controller: _controller,
@@ -145,13 +140,11 @@ class _ClipboardScreenState extends State<ClipboardScreen> {
             const SizedBox(height: 30),
             const Divider(color: Colors.white12),
             const SizedBox(height: 20),
-            const Text(
-              'Receive Text',
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold),
-            ),
+            const Text('Receive Text',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
             ElevatedButton.icon(
               onPressed: _busy ? null : _receiveClipboard,
@@ -161,8 +154,7 @@ class _ClipboardScreenState extends State<ClipboardScreen> {
                       height: 20,
                       child: CircularProgressIndicator(strokeWidth: 2))
                   : const Icon(Icons.download),
-              label:
-                  Text(_busy ? "Waiting..." : "Wait for Clipboard"),
+              label: Text(_busy ? "Waiting..." : "Wait for Clipboard"),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.greenAccent.withOpacity(0.2),
               ),
@@ -190,8 +182,7 @@ class _ClipboardScreenState extends State<ClipboardScreen> {
                     const SizedBox(height: 8),
                     GestureDetector(
                       onTap: () {
-                        Clipboard.setData(
-                            ClipboardData(text: _received));
+                        Clipboard.setData(ClipboardData(text: _received));
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                               content: Text('Copied to clipboard!')),
@@ -199,18 +190,16 @@ class _ClipboardScreenState extends State<ClipboardScreen> {
                       },
                       child: const Text('Tap to copy',
                           style: TextStyle(
-                              color: Colors.greenAccent,
-                              fontSize: 12)),
+                              color: Colors.greenAccent, fontSize: 12)),
                     ),
                   ],
                 ),
               ),
             ],
             const SizedBox(height: 20),
-            Text(
-              _status,
-              style: const TextStyle(color: Colors.grey, fontSize: 12),
-            ),
+            Text(_status,
+                style:
+                    const TextStyle(color: Colors.grey, fontSize: 12)),
           ],
         ),
       ),
