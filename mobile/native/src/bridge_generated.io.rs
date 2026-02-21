@@ -44,6 +44,20 @@ pub extern "C" fn wire_receive_message(port_: i64) {
     wire_receive_message_impl(port_)
 }
 
+#[no_mangle]
+pub extern "C" fn wire_send_clipboard(
+    port_: i64,
+    text: *mut wire_uint_8_list,
+    target_ip: *mut wire_uint_8_list,
+) {
+    wire_send_clipboard_impl(port_, text, target_ip)
+}
+
+#[no_mangle]
+pub extern "C" fn wire_receive_clipboard(port_: i64) {
+    wire_receive_clipboard_impl(port_)
+}
+
 // Section: allocate functions
 
 #[no_mangle]

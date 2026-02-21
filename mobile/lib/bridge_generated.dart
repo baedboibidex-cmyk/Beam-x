@@ -40,6 +40,15 @@ abstract class Native {
   Future<String> receiveMessage({dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kReceiveMessageConstMeta;
+
+  Future<String> sendClipboard(
+      {required String text, required String targetIp, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kSendClipboardConstMeta;
+
+  Future<String> receiveClipboard({dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kReceiveClipboardConstMeta;
 }
 
 class Device {
@@ -189,6 +198,44 @@ class NativeImpl implements Native {
   FlutterRustBridgeTaskConstMeta get kReceiveMessageConstMeta =>
       const FlutterRustBridgeTaskConstMeta(
         debugName: "receive_message",
+        argNames: [],
+      );
+
+  Future<String> sendClipboard(
+      {required String text, required String targetIp, dynamic hint}) {
+    var arg0 = _platform.api2wire_String(text);
+    var arg1 = _platform.api2wire_String(targetIp);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) =>
+          _platform.inner.wire_send_clipboard(port_, arg0, arg1),
+      parseSuccessData: _wire2api_String,
+      parseErrorData: null,
+      constMeta: kSendClipboardConstMeta,
+      argValues: [text, targetIp],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kSendClipboardConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "send_clipboard",
+        argNames: ["text", "targetIp"],
+      );
+
+  Future<String> receiveClipboard({dynamic hint}) {
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_receive_clipboard(port_),
+      parseSuccessData: _wire2api_String,
+      parseErrorData: null,
+      constMeta: kReceiveClipboardConstMeta,
+      argValues: [],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kReceiveClipboardConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "receive_clipboard",
         argNames: [],
       );
 
@@ -471,6 +518,40 @@ class NativeWire implements FlutterRustBridgeWireBase {
           'wire_receive_message');
   late final _wire_receive_message =
       _wire_receive_messagePtr.asFunction<void Function(int)>();
+
+  void wire_send_clipboard(
+    int port_,
+    ffi.Pointer<wire_uint_8_list> text,
+    ffi.Pointer<wire_uint_8_list> target_ip,
+  ) {
+    return _wire_send_clipboard(
+      port_,
+      text,
+      target_ip,
+    );
+  }
+
+  late final _wire_send_clipboardPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(ffi.Int64, ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>)>>('wire_send_clipboard');
+  late final _wire_send_clipboard = _wire_send_clipboardPtr.asFunction<
+      void Function(
+          int, ffi.Pointer<wire_uint_8_list>, ffi.Pointer<wire_uint_8_list>)>();
+
+  void wire_receive_clipboard(
+    int port_,
+  ) {
+    return _wire_receive_clipboard(
+      port_,
+    );
+  }
+
+  late final _wire_receive_clipboardPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
+          'wire_receive_clipboard');
+  late final _wire_receive_clipboard =
+      _wire_receive_clipboardPtr.asFunction<void Function(int)>();
 
   ffi.Pointer<wire_uint_8_list> new_uint_8_list_0(
     int len,

@@ -1,3 +1,4 @@
+import 'screens/clipboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
 import 'dart:io';

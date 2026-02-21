@@ -141,3 +141,43 @@ pub fn receive_message() -> String {
         Err(e) => format!("Error: {}", e),
     }
 }
+
+// Send clipboard text to a device
+pub fn send_clipboard(text: String, target_ip: String) -> String {
+    use std::io::Write;
+    let addr = format!("{}:54324", target_ip);
+    match std::net::TcpStream::connect(&addr) {
+        Ok(mut stream) => {
+            let payload = format!("CLIPBOARD|{}", text);
+            let _ = stream.write_all(payload.as_bytes());
+            format!("Clipboard sent to {}", target_ip)
+        }
+        Err(e) => format!("Error: {}", e),
+    }
+}
+
+// Listen for incoming clipboard
+pub fn receive_clipboard() -> String {
+    use std::io::Read;
+    let listener = match std::net::TcpListener::bind("0.0.0.0:54324") {
+        Ok(l) => l,
+        Err(e) => return format!("Error: {}", e),
+    };
+    match listener.accept() {
+        Ok((mut stream, _)) => {
+            let mut buf = [0; 4096];
+            match stream.read(&mut buf) {
+                Ok(n) => {
+                    let msg = String::from_utf8_lossy(&buf[..n]).to_string();
+                    if msg.starts_with("CLIPBOARD|") {
+                        msg[10..].to_string()
+                    } else {
+                        msg
+                    }
+                }
+                Err(e) => format!("Error: {}", e),
+            }
+        }
+        Err(e) => format!("Error: {}", e),
+    }
+}

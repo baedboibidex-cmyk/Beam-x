@@ -114,6 +114,34 @@ fn wire_receive_message_impl(port_: MessagePort) {
         move || move |task_callback| Result::<_, ()>::Ok(receive_message()),
     )
 }
+fn wire_send_clipboard_impl(
+    port_: MessagePort,
+    text: impl Wire2Api<String> + UnwindSafe,
+    target_ip: impl Wire2Api<String> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, String, _>(
+        WrapInfo {
+            debug_name: "send_clipboard",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_text = text.wire2api();
+            let api_target_ip = target_ip.wire2api();
+            move |task_callback| Result::<_, ()>::Ok(send_clipboard(api_text, api_target_ip))
+        },
+    )
+}
+fn wire_receive_clipboard_impl(port_: MessagePort) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap::<_, _, _, String, _>(
+        WrapInfo {
+            debug_name: "receive_clipboard",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || move |task_callback| Result::<_, ()>::Ok(receive_clipboard()),
+    )
+}
 // Section: wrapper structs
 
 // Section: static checks

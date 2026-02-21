@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rust_bridge/flutter_rust_bridge.dart';
-import '../bridge_generated.dart';
-
-final _native = NativeImpl(ExternalLibrary.open(
-  '/home/gamp/beamx/mobile/native/target/debug/libnative.so'));
+import '../main.dart' show native;
 
 class ChatMessage {
   final String text;
@@ -35,14 +31,13 @@ class _ChatScreenState extends State<ChatScreen> {
       _messages.add(ChatMessage(text: text, isMe: true));
     });
     try {
-      await _native.sendMessage(
+      await native.sendMessage(
         message: text,
         targetIp: widget.deviceIp,
       );
     } catch (e) {
       setState(() {
-        _messages.add(ChatMessage(
-            text: "Failed to send: $e", isMe: false));
+        _messages.add(ChatMessage(text: "Failed to send: $e", isMe: false));
       });
     }
   }
@@ -52,7 +47,7 @@ class _ChatScreenState extends State<ChatScreen> {
     setState(() => _listening = true);
     while (_listening) {
       try {
-        final result = await _native.receiveMessage();
+        final result = await native.receiveMessage();
         if (result.contains('|')) {
           final parts = result.split('|');
           final msg = parts.sublist(1).join('|');
@@ -96,8 +91,7 @@ class _ChatScreenState extends State<ChatScreen> {
         actions: [
           Container(
             margin: const EdgeInsets.only(right: 16),
-            padding:
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
               color: Colors.greenAccent.withOpacity(0.2),
               borderRadius: BorderRadius.circular(20),
@@ -108,8 +102,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 Icon(Icons.circle, color: Colors.greenAccent, size: 8),
                 SizedBox(width: 4),
                 Text('Live',
-                    style: TextStyle(
-                        color: Colors.greenAccent, fontSize: 12)),
+                    style: TextStyle(color: Colors.greenAccent, fontSize: 12)),
               ],
             ),
           ),
@@ -130,8 +123,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             style: TextStyle(color: Colors.grey)),
                         SizedBox(height: 8),
                         Text('Send a message to start chatting',
-                            style: TextStyle(
-                                color: Colors.grey, fontSize: 12)),
+                            style: TextStyle(color: Colors.grey, fontSize: 12)),
                       ],
                     ),
                   )
@@ -212,8 +204,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       color: Color(0xFF2979FF),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.send,
-                        color: Colors.white, size: 20),
+                    child: const Icon(Icons.send, color: Colors.white, size: 20),
                   ),
                 ),
               ],
